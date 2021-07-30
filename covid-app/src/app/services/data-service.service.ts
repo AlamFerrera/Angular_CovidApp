@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, min} from 'rxjs/operators';
+import { DateWiseData } from '../componentes/models/date-wise-data';
 import { GlobalDataSummary } from '../componentes/models/global-data';
 
 @Injectable({
@@ -15,7 +16,35 @@ export class DataServiceService {
   constructor(private http:HttpClient)
   { }
 
- getGlobalData(){
+  getDateWiseData(){
+    return this.http.get(this.dateWiseDataUrl, {responseType: 'text'})
+    .pipe(map(result => {
+      let rows = result.split('\n');
+      let minData = {};
+      let header = rows[0];
+      let dates = header.split(/,(?:=\S)/);
+      dates.splice(0,4);
+      rows.splice(0,1);
+
+      rows.forEach(row=>{
+        let cols = row.split(/,(?:=\S)/);
+        let con = cols[1];
+        cols.splice(0,4);
+        minData[con] = [];
+        cols.forEach((value,index) => {
+          let dw: DateWiseData = {
+            cases: +value,
+            country: con,
+            date: new Date(Date.parse(dates[index]))
+          }
+            minData[con].push(dw);
+        });
+      })
+      return minData;
+    }));
+  }
+
+  getGlobalData(){
     return this.http.get(this.globalDataUrl, {responseType: 'text'}).pipe(
       map(result => {
         let data: GlobalDataSummary[] = [];

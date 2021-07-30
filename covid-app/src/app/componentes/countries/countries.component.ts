@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DataServiceService } from 'src/app/services/data-service.service';
+import { DateWiseData } from '../models/date-wise-data';
 import { GlobalDataSummary } from '../models/global-data';
 
 @Component({
@@ -17,10 +18,18 @@ export class CountriesComponent implements OnInit {
   totalActive = 0;
   totalDeaths = 0;
   totalRecovered = 0;
+  dateWiseData;
+  selectedCountryData: DateWiseData[];
 
   constructor(private service: DataServiceService) { }
 
   ngOnInit(): void {
+
+    this.service.getDateWiseData().subscribe((result) => {
+        this.dateWiseData = result;
+
+    });
+
     this.suscription = this.service.getGlobalData()
       .subscribe(result => {
         this.data = result;
