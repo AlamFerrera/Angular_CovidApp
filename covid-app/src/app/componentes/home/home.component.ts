@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   columnChart: GoogleChartInterface= {
     chartType: 'ColumnChart'
   };
+  loading = true;
  // datatable = [];
 
   constructor(private dataService:DataServiceService) { }
@@ -41,6 +42,9 @@ export class HomeComponent implements OnInit {
               }
           });
           this.initChart('c');
+        },
+        complete: ()=>{
+          this.loading = false;
         }
       }
     )
@@ -82,13 +86,25 @@ export class HomeComponent implements OnInit {
     this.pieChart = {
       chartType: 'PieChart',
       dataTable: datatable,
-      options: {height: 500} //'Country': 'Cases'
+      options: {
+        height: 500,
+        animation:{
+          duration: 1000,
+          easing: 'out'
+        }
+      } //'Country': 'Cases'
     };
 
     this.columnChart = {
       chartType: 'ColumnChart',
       dataTable: datatable,
-      options: {height: 500} //'Country': 'Cases'
+      options: {
+        height: 500,
+        animation:{
+          duration: 1000,
+          easing: 'out'
+        }
+      } //'Country': 'Cases'
     };
 
 

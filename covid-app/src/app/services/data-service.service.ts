@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {map, min} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import { DateWiseData } from '../componentes/models/date-wise-data';
 import { GlobalDataSummary } from '../componentes/models/global-data';
 
@@ -22,12 +22,12 @@ export class DataServiceService {
       let rows = result.split('\n');
       let minData = {};
       let header = rows[0];
-      let dates = header.split(/,(?:=\S)/);
+      let dates = header.split(/,(?=\S)/);
       dates.splice(0,4);
       rows.splice(0,1);
 
       rows.forEach(row=>{
-        let cols = row.split(/,(?:=\S)/);
+        let cols = row.split(/,(?=\S)/);
         let con = cols[1];
         cols.splice(0,4);
         minData[con] = [];
@@ -39,7 +39,8 @@ export class DataServiceService {
           }
             minData[con].push(dw);
         });
-      })
+      });
+
       return minData;
     }));
   }
